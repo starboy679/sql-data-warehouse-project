@@ -1,19 +1,39 @@
 /*
-=============================================================
-Create Database and Schemas
-=============================================================
+===============================================================================
+Stored Procedure: bronze.load_bronze
+===============================================================================
 Script Purpose:
-    This script creates a new database named 'DataWarehouse' after checking if it already exists.
-    If the database exists, it is dropped and recreated. Additionally, the script sets up three schemas
-    within the database: 'bronze', 'silver', and 'gold'.
+    This stored procedure loads raw data into the Bronze Layer of the Data Warehouse.
 
-WARNING:
-    Running this script will drop the entire 'DataWarehouse' database if it exists.
-    All data in the database will be permanently deleted. Proceed with caution
-    and ensure you have proper backups before running this script.
+    It performs the following operations:
+    - Truncates existing data from Bronze tables before loading new data.
+    - Loads raw data from CRM and ERP CSV source files using BULK INSERT.
+    - Skips the header row in each CSV file.
+    - Measures and prints the loading duration for each table.
+    - Displays batch loading messages and handles errors using TRY...CATCH.
+
+Tables Loaded:
+    CRM:
+        - bronze.crm_cust_info
+        - bronze.crm_prd_info
+        - bronze.crm_sales_details
+
+    ERP:
+        - bronze.erp_cust_az12
+        - bronze.erp_loc_a101
+        - bronze.erp_px_cat_g1v2
+
+Usage Example:
+    EXEC bronze.load_bronze;
+
+Important Notes:
+    - Ensure all source CSV files exist at the specified file paths.
+    - Ensure SQL Server has permission to access the source files.
+    - Existing data in Bronze tables will be deleted before each reload.
+    - This procedure is designed to reload the raw source data.
+
+===============================================================================
 */
-
-EXEC bronze.load_bronze;
 
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
